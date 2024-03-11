@@ -38,6 +38,12 @@ float triangleVertices[] = {
 
 // Vertex shader object stored on the GPU, referenced by this ID.
 GLuint vertexShader;
+// Pixel shader object stored on the GPU, referenced by this ID.
+GLuint fragmentShader;
+
+// links both shaders together
+GLuint shaderProgram;
+
 
 int main(int argc, char* argv[])
 {
@@ -83,6 +89,7 @@ void InitWindow(int argc, char* argv[])
 
     WindowHandle = glutCreateWindow(WINDOW_TITLE_PREFIX);
 
+#if defined(_DEBUG)
     if (WindowHandle < 1) {
         fprintf(
             stderr,
@@ -90,8 +97,11 @@ void InitWindow(int argc, char* argv[])
         );
         exit(EXIT_FAILURE);
     }
+#endif
 
     GLenum err = glewInit();
+
+#if defined(_DEBUG)
     if (err != GLEW_OK)
     {
         fprintf(
@@ -100,6 +110,7 @@ void InitWindow(int argc, char* argv[])
         );
         exit(EXIT_FAILURE);
     }
+#endif
 
     glutReshapeFunc(ResizeFunction);
     glutDisplayFunc(RenderFunction);
@@ -107,16 +118,21 @@ void InitWindow(int argc, char* argv[])
 
 void InitScene()
 {
-    //// Generate 1 buffer object corresponding to the stored ID.
-    //glGenBuffers(1, &triangleVbo);
-    //// Vertex Buffer Objects use GL_ARRAY_BUFFER type, bind that to the created buffer object to make it a VBO.
-    //// Also sets the current buffer ID.
-    //glBindBuffer(GL_ARRAY_BUFFER, triangleVbo);
-    //// send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW);
-    std::string shaderString = LoadShader("VertexShader.glsl");
-    const GLchar* vertexShaderSource = shaderString.c_str();
+    // Generate 1 buffer object corresponding to the stored ID.
+    glGenBuffers(1, &triangleVbo);
+    // Vertex Buffer Objects use GL_ARRAY_BUFFER type, bind that to the created buffer object to make it a VBO.
+    // Also sets the current buffer ID.
+    glBindBuffer(GL_ARRAY_BUFFER, triangleVbo);
+    // send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
+    glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW);
+
+    std::string vertexShaderString = LoadShader("VertexShader.glsl");
+    const GLchar* vertexShaderSource = vertexShaderString.c_str();
     CompileShader(vertexShader, vertexShaderSource, GL_VERTEX_SHADER);
+
+    std::string fragmentShaderString = LoadShader("FragmentShader.glsl");
+    const GLchar* fragmentShaderSource = fragmentShaderString.c_str();
+    CompileShader(fragmentShader, fragmentShaderSource, GL_FRAGMENT_SHADER);
 }
 
 void ResizeFunction(int Width, int Height)
