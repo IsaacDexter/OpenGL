@@ -38,7 +38,7 @@ float triangleVertices[] = {
 
 // Vertex shader object stored on the GPU, referenced by this ID.
 GLuint vertexShader;
-// Pixel shader object stored on the GPU, referenced by this ID.
+// Fragment (pixel) shader object stored on the GPU, referenced by this ID.
 GLuint fragmentShader;
 
 // links both shaders together
