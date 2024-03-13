@@ -22,6 +22,14 @@ private:
 	bool CreateProgram(GLuint& id, const std::array<GLuint, size> shaders);
 private:
 	const char* m_windowTitlePrefix = "OpenGL";
+
+	// Vertices of the triangle
+	const GLfloat m_triangleVertices[9] = {
+		-1.0f, -1.0f, 0.0f,
+		1.0f, -1.0f, 0.0f,
+		0.0f,  1.0f, 0.0f,
+	};
+
 	GLint m_width = 800;
 	GLint m_height = 600;
 	GLint m_windowHandle = 0;

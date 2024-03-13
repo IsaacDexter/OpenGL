@@ -62,12 +62,7 @@ void Renderer::InitScene()
     glBindVertexArray(m_vao);
 
 
-    // Vertices of the triangle
-    static const GLfloat m_triangleVertices[] = {
-        -1.0f, -1.0f, 0.0f,
-        1.0f, -1.0f, 0.0f,
-        0.0f,  1.0f, 0.0f,
-    };
+    
     CreateVertexBuffer(m_triangleVbo, m_triangleVertices, GL_STATIC_DRAW);
 
     CompileShader(m_vertexShader, "VertexShader.glsl", GL_VERTEX_SHADER);
@@ -77,8 +72,8 @@ void Renderer::InitScene()
     CreateProgram<2>(m_program, { m_vertexShader, m_fragmentShader });
 
     // Delete the vertex and fragment shaders once they've been bound
-    //glDeleteShader(m_vertexShader);
-    //glDeleteShader(m_fragmentShader);
+    glDeleteShader(m_vertexShader);
+    glDeleteShader(m_fragmentShader);
 }
 
 void Renderer::ResizeFunction(int width, int height)
@@ -148,6 +143,7 @@ bool Renderer::CompileShader(GLuint& id, const char* address, GLenum type)
     if (!file.is_open())
     {
         std::cerr << "ERROR: Failed to open " << address << std::endl;
+        return false;
     }
     // Assign the contents of the file to the string by iterating through the file
     contents.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
@@ -227,10 +223,10 @@ bool Renderer::CreateProgram(GLuint& id, const std::array<GLuint, size> shaders)
         return false;
     }
 
-    //for (GLuint shader : shaders)
-    //{
-    //    glDetachShader(id, shader);
-    //}
+    for (GLuint shader : shaders)
+    {
+        glDetachShader(id, shader);
+    }
 
 }
 
