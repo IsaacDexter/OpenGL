@@ -31,7 +31,7 @@ void Renderer::InitWindow(int argc, char* argv[])
 
     glutInitWindowSize(m_width, m_height);
 
-    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
+    glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGB);
 
     m_windowHandle = glutCreateWindow(m_windowTitlePrefix);
 
@@ -62,14 +62,108 @@ void Renderer::InitScene()
     glBindVertexArray(m_vao);
 
 
-    
-    CreateVertexBuffer(m_triangleVbo, m_triangleVertices, GL_STATIC_DRAW);
 
-    CompileShader(m_vertexShader, "VertexShader.glsl", GL_VERTEX_SHADER);
-    CompileShader(m_fragmentShader, "FragmentShader.glsl", GL_FRAGMENT_SHADER);
+    // Generate 1 buffer object corresponding to the stored ID.
+    glGenBuffers(1, &m_triangleVbo);
+    // Vertex Buffer Objects use GL_ARRAY_BUFFER type, bind that to the created buffer object to make it a VBO.
+    // Also sets the current buffer ID.
+    glBindBuffer(GL_ARRAY_BUFFER, m_triangleVbo);
+    // send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
+    glBufferData(GL_ARRAY_BUFFER, sizeof(m_triangleVertices), m_triangleVertices, GL_STATIC_DRAW);
+
+
+
+    // Create a shader and store the ID
+    m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+    // Load the shader file 
+    std::string vscontents = "";
+    std::ifstream vsfile;
+    vsfile.open("VertexShader.glsl", std::ios::in);
+
+    // Ensure the file could in fact be opened 
+    if (!vsfile.is_open())
+    {
+        std::cerr << "ERROR: Failed to open " << std::endl;
+    }
+    // Assign the contents of the file to the string by iterating through the file
+    vscontents.assign(std::istreambuf_iterator<char>(vsfile), std::istreambuf_iterator<char>());
+    vsfile.close();
+    const GLchar* vssource = vscontents.c_str();
+
+    // Compile the shader from the char array
+    glShaderSource(m_vertexShader, 1, &vssource, NULL);
+    glCompileShader(m_vertexShader);
+
+    // Check for errors when compiling the shader
+    GLint vssuccess;
+    char vsinfoLog[GL_INFO_LOG_LENGTH];
+    glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, &vssuccess);
+    if (!vssuccess)
+    {
+        // Log the compilation error
+        glGetShaderInfoLog(m_vertexShader, GL_INFO_LOG_LENGTH, NULL, vsinfoLog);
+        std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << vsinfoLog << std::endl;
+    }
+
+
+
+    // Create a shader and store the ID
+    m_fragmentShader = glCreateShader(GL_VERTEX_SHADER);
+
+    // Load the shader file 
+    std::string fscontents = "";
+    std::ifstream fsfile;
+    fsfile.open("FragmentShader.glsl", std::ios::in);
+
+    // Ensure the file could in fact be opened 
+    if (!fsfile.is_open())
+    {
+        std::cerr << "ERROR: Failed to open " << std::endl;
+    }
+    // Assign the contents of the file to the string by iterating through the file
+    fscontents.assign(std::istreambuf_iterator<char>(fsfile), std::istreambuf_iterator<char>());
+    fsfile.close();
+    const GLchar* fssource = fscontents.c_str();
+
+    // Compile the shader from the char array
+    glShaderSource(m_fragmentShader, 1, &fssource, NULL);
+    glCompileShader(m_fragmentShader);
+
+    // Check for errors when compiling the shader
+    GLint fssuccess;
+    char fsinfoLog[GL_INFO_LOG_LENGTH];
+    glGetShaderiv(m_fragmentShader, GL_COMPILE_STATUS, &fssuccess);
+    if (!fssuccess)
+    {
+        // Log the compilation error
+        glGetShaderInfoLog(m_fragmentShader, GL_INFO_LOG_LENGTH, NULL, fsinfoLog);
+        std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << fsinfoLog << std::endl;
+    }
+
+
 
     // link the shaders in a shader program
-    CreateProgram<2>(m_program, { m_vertexShader, m_fragmentShader });
+     // Link shaders together into a program object, an object that encompasses multiple processed shader stages
+    m_program = glCreateProgram();
+    glAttachShader(m_program, m_vertexShader);
+    glAttachShader(m_program, m_fragmentShader);
+
+    glLinkProgram(m_program);
+
+    // Check for errors when linking the shaders
+    GLint psuccess;
+    char pinfoLog[GL_INFO_LOG_LENGTH];
+    glGetProgramiv(m_program, GL_COMPILE_STATUS, &psuccess);
+    if (!psuccess)
+    {
+        // Log the compilation error
+        glGetShaderInfoLog(m_program, GL_INFO_LOG_LENGTH, NULL, pinfoLog);
+        std::cerr << "ERROR: Could not link program.\n" << pinfoLog << std::endl;
+    }
+
+    glDetachShader(m_program, m_vertexShader);
+    glDetachShader(m_program, m_fragmentShader);
 
     // Delete the vertex and fragment shaders once they've been bound
     glDeleteShader(m_vertexShader);
@@ -104,16 +198,16 @@ void Renderer::RenderFunction(void)
     );
     // Enable the triangle vertex array. Set to 0 to match the first line of the vertex shader.
     glEnableVertexAttribArray(0);
-
+    glBindVertexArray(m_vao);
     // Bind the triangle's vertex buffer object,
     glBindBuffer(GL_ARRAY_BUFFER, m_triangleVbo);
 
     // Draw the currently bound triangle array
     glDrawArrays(GL_TRIANGLES, 0, 3);
 
-
+    glBindVertexArray(0);
     glDisableVertexAttribArray(0);
-
+    glUseProgram(0);
 
 
     glutSwapBuffers();
