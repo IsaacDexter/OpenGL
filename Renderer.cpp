@@ -71,99 +71,13 @@ void Renderer::InitScene()
     // send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
     glBufferData(GL_ARRAY_BUFFER, sizeof(m_triangleVertices), m_triangleVertices, GL_STATIC_DRAW);
 
-
-
-    // Create a shader and store the ID
-    m_vertexShader = glCreateShader(GL_VERTEX_SHADER);
-
-    // Load the shader file 
-    std::string vscontents = "";
-    std::ifstream vsfile;
-    vsfile.open("VertexShader.glsl", std::ios::in);
-
-    // Ensure the file could in fact be opened 
-    if (!vsfile.is_open())
-    {
-        std::cerr << "ERROR: Failed to open " << std::endl;
-    }
-    // Assign the contents of the file to the string by iterating through the file
-    vscontents.assign(std::istreambuf_iterator<char>(vsfile), std::istreambuf_iterator<char>());
-    vsfile.close();
-    const GLchar* vssource = vscontents.c_str();
-
-    // Compile the shader from the char array
-    glShaderSource(m_vertexShader, 1, &vssource, NULL);
-    glCompileShader(m_vertexShader);
-
-    // Check for errors when compiling the shader
-    GLint vssuccess;
-    char vsinfoLog[GL_INFO_LOG_LENGTH];
-    glGetShaderiv(m_vertexShader, GL_COMPILE_STATUS, &vssuccess);
-    if (!vssuccess)
-    {
-        // Log the compilation error
-        glGetShaderInfoLog(m_vertexShader, GL_INFO_LOG_LENGTH, NULL, vsinfoLog);
-        std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << vsinfoLog << std::endl;
-    }
-
-
-
-    // Create a shader and store the ID
-    m_fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-    // Load the shader file 
-    std::string fscontents = "";
-    std::ifstream fsfile;
-    fsfile.open("FragmentShader.glsl", std::ios::in);
-
-    // Ensure the file could in fact be opened 
-    if (!fsfile.is_open())
-    {
-        std::cerr << "ERROR: Failed to open " << std::endl;
-    }
-    // Assign the contents of the file to the string by iterating through the file
-    fscontents.assign(std::istreambuf_iterator<char>(fsfile), std::istreambuf_iterator<char>());
-    fsfile.close();
-    const GLchar* fssource = fscontents.c_str();
-
-    // Compile the shader from the char array
-    glShaderSource(m_fragmentShader, 1, &fssource, NULL);
-    glCompileShader(m_fragmentShader);
-
-    // Check for errors when compiling the shader
-    GLint fssuccess;
-    char fsinfoLog[GL_INFO_LOG_LENGTH];
-    glGetShaderiv(m_fragmentShader, GL_COMPILE_STATUS, &fssuccess);
-    if (!fssuccess)
-    {
-        // Log the compilation error
-        glGetShaderInfoLog(m_fragmentShader, GL_INFO_LOG_LENGTH, NULL, fsinfoLog);
-        std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << fsinfoLog << std::endl;
-    }
+    CompileShader(m_vertexShader, "VertexShader.glsl", GL_VERTEX_SHADER);
+    CompileShader(m_fragmentShader, "FragmentShader.glsl", GL_FRAGMENT_SHADER);
 
 
 
     // link the shaders in a shader program
-     // Link shaders together into a program object, an object that encompasses multiple processed shader stages
-    m_program = glCreateProgram();
-    glAttachShader(m_program, m_vertexShader);
-    glAttachShader(m_program, m_fragmentShader);
-
-    glLinkProgram(m_program);
-
-    // Check for errors when linking the shaders
-    GLint psuccess;
-    char pinfoLog[GL_INFO_LOG_LENGTH];
-    glGetProgramiv(m_program, GL_COMPILE_STATUS, &psuccess);
-    if (!psuccess)
-    {
-        // Log the compilation error
-        glGetShaderInfoLog(m_program, GL_INFO_LOG_LENGTH, NULL, pinfoLog);
-        std::cerr << "ERROR: Could not link program.\n" << pinfoLog << std::endl;
-    }
-
-    glDetachShader(m_program, m_vertexShader);
-    glDetachShader(m_program, m_fragmentShader);
+    CreateProgram<2>(m_program, { m_vertexShader, m_fragmentShader });
 
     // Delete the vertex and fragment shaders once they've been bound
     glDeleteShader(m_vertexShader);
