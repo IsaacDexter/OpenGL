@@ -21,6 +21,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="VertexShader.glsl" />
-    <None Include="FragementShader.glsl" />
+    <None Include="FragmentShader.glsl" />
   </ItemGroup>
 </Project>

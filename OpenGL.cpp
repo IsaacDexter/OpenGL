@@ -23,8 +23,8 @@ void InitWindow(int, char* []);
 void InitScene(void);
 void ResizeFunction(int, int);
 void RenderFunction(void);
-std::string LoadShader(const char* address);
-bool CompileShader(GLuint& id, const GLchar* source, GLenum type);
+bool CompileShader(GLuint& id, const char* address, GLenum type);
+bool LoadVertexBuffer(GLuint& id, const GLfloat* vertices, const GLenum usage);
 
 // A Vertex Buffer Object stores vertex data on the GPU. It is referenced by a UINT ID.
 GLuint triangleVbo;
@@ -118,22 +118,10 @@ void InitWindow(int argc, char* argv[])
 
 void InitScene()
 {
-    // Generate 1 buffer object corresponding to the stored ID.
-    glGenBuffers(1, &triangleVbo);
-    // Vertex Buffer Objects use GL_ARRAY_BUFFER type, bind that to the created buffer object to make it a VBO.
-    // Also sets the current buffer ID.
-    glBindBuffer(GL_ARRAY_BUFFER, triangleVbo);
-    // send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW);
+    LoadVertexBuffer(triangleVbo, triangleVertices, GL_STATIC_DRAW);
 
-    std::string vertexShaderContents = LoadShader("VertexShader.glsl");
-    const GLchar* vertexShaderSource = vertexShaderContents.c_str();
-    std::cout << vertexShaderSource;
-    CompileShader(vertexShader, vertexShaderSource, GL_VERTEX_SHADER);
-
-    std::string fragmentShaderContents = LoadShader("FragmentShader.glsl");
-    const GLchar* fragmentShaderSource = fragmentShaderContents.c_str();
-    CompileShader(fragmentShader, fragmentShaderSource, GL_FRAGMENT_SHADER);
+    CompileShader(vertexShader, "VertexShader.glsl", GL_VERTEX_SHADER);
+    CompileShader(fragmentShader, "FragmentShader.glsl", GL_FRAGMENT_SHADER);
 }
 
 void ResizeFunction(int Width, int Height)
@@ -151,35 +139,41 @@ void RenderFunction(void)
     glutPostRedisplay();
 }
 
-/** 
-* Load the glsl as a string. This can be converted to a GLchar* using .c_str().
+/**
+* Load and compile a shader of a given type and address
+* @param id - ID of the shader object
+* @param address - shader source file to load. must be text equivalent file
+* @param type - GL_*_SHADER
+* @returns success/failure
 */
-std::string LoadShader(const char* address)
+bool CompileShader(GLuint& id, const char* address, GLenum type)
 {
+    // Create a shader and store the ID
+    id = glCreateShader(type);
+
+
+
     // Load the shader file 
     std::string contents = "";
     std::ifstream file;
     file.open(address, std::ios::in);
 
     // Ensure the file could in fact be opened 
-    if (file.is_open())
+    if (!file.is_open())
     {
-        // Assign the contents of the file to the string by iterating through the file
-        contents.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-        file.close();
+        std::cerr << "ERROR: Failed to open " << address << std::endl;
     }
-    
-    return contents;
-}
+    // Assign the contents of the file to the string by iterating through the file
+    contents.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+    file.close();
+    const GLchar* source = contents.c_str();
 
-bool CompileShader(GLuint& id, const GLchar* source, GLenum type)
-{
-    // Create a shader and store the ID
-    id = glCreateShader(type);
-    
+
+
     // Compile the shader from the char array
     glShaderSource(id, 1, &source, NULL);
     glCompileShader(id);
+
 
 
     // Check for errors when compiling the shader
@@ -193,6 +187,26 @@ bool CompileShader(GLuint& id, const GLchar* source, GLenum type)
         std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
         return false;
     }
+
+    return true;
+}
+
+/** 
+* Load, bind and store data in an object
+* @param id - ID of the buffer object
+* @param target - array of vertex data
+* @param usage - GL_STATIC_DRAW for static objects
+* @returns success/failure
+*/
+bool LoadVertexBuffer(GLuint& id, const GLfloat* vertices, const GLenum usage)
+{
+    // Generate 1 buffer object corresponding to the stored ID.
+    glGenBuffers(1, &id);
+    // Vertex Buffer Objects use GL_ARRAY_BUFFER type, bind that to the created buffer object to make it a VBO.
+    // Also sets the current buffer ID.
+    glBindBuffer(GL_ARRAY_BUFFER, id);
+    // send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, usage);
 
     return true;
 }
