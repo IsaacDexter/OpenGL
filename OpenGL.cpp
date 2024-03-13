@@ -24,7 +24,7 @@ void InitScene(void);
 void ResizeFunction(int, int);
 void RenderFunction(void);
 std::string LoadShader(const char* address);
-void CompileShader(GLuint& id, const GLchar* source, GLenum type);
+bool CompileShader(GLuint& id, const GLchar* source, GLenum type);
 
 // A Vertex Buffer Object stores vertex data on the GPU. It is referenced by a UINT ID.
 GLuint triangleVbo;
@@ -126,12 +126,13 @@ void InitScene()
     // send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
     glBufferData(GL_ARRAY_BUFFER, sizeof(triangleVertices), triangleVertices, GL_STATIC_DRAW);
 
-    std::string vertexShaderString = LoadShader("VertexShader.glsl");
-    const GLchar* vertexShaderSource = vertexShaderString.c_str();
+    std::string vertexShaderContents = LoadShader("VertexShader.glsl");
+    const GLchar* vertexShaderSource = vertexShaderContents.c_str();
+    std::cout << vertexShaderSource;
     CompileShader(vertexShader, vertexShaderSource, GL_VERTEX_SHADER);
 
-    std::string fragmentShaderString = LoadShader("FragmentShader.glsl");
-    const GLchar* fragmentShaderSource = fragmentShaderString.c_str();
+    std::string fragmentShaderContents = LoadShader("FragmentShader.glsl");
+    const GLchar* fragmentShaderSource = fragmentShaderContents.c_str();
     CompileShader(fragmentShader, fragmentShaderSource, GL_FRAGMENT_SHADER);
 }
 
@@ -155,51 +156,43 @@ void RenderFunction(void)
 */
 std::string LoadShader(const char* address)
 {
-    std::string outShader;
+    // Load the shader file 
+    std::string contents = "";
+    std::ifstream file;
+    file.open(address, std::ios::in);
 
-    std::ifstream shaderFile;
-    shaderFile.open(address, std::ios::in);
-    std::string line;
-    // Add each line of the file to the string, appending the newline character
-
-    if (shaderFile.is_open())
+    // Ensure the file could in fact be opened 
+    if (file.is_open())
     {
-        while (std::getline(shaderFile, line))
-        {
-            outShader.append(line + '\n');
-        }
-        shaderFile.close();
+        // Assign the contents of the file to the string by iterating through the file
+        contents.assign(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+        file.close();
     }
-
-    return outShader;
+    
+    return contents;
 }
 
-void CompileShader(GLuint& id, const GLchar* source, GLenum type)
+bool CompileShader(GLuint& id, const GLchar* source, GLenum type)
 {
+    // Create a shader and store the ID
     id = glCreateShader(type);
+    
+    // Compile the shader from the char array
     glShaderSource(id, 1, &source, NULL);
     glCompileShader(id);
 
-    // Check for errors when loading the shader
-#if defined(_DEBUG)
-    int  success;
+
+    // Check for errors when compiling the shader
+    GLint success;
     char infoLog[512];
     glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
     if (!success)
     {
+        // Log the compilation error
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        return false;
     }
-#endif
+
+    return true;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
