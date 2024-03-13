@@ -109,7 +109,7 @@ void Renderer::InitScene()
 
 
     // Create a shader and store the ID
-    m_fragmentShader = glCreateShader(GL_VERTEX_SHADER);
+    m_fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 
     // Load the shader file 
     std::string fscontents = "";
