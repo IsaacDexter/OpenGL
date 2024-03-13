@@ -17,7 +17,7 @@ private:
 	void InitScene();
 
 	bool CompileShader(GLuint& id, const char* address, GLenum type);
-	bool CreateVertexBuffer(GLuint& id, const GLfloat* vertices, const GLenum usage);
+	bool CreateVertexBuffer(GLuint& id, const GLfloat* vertices, const size_t size, const GLenum usage);
 	template<size_t size>
 	bool CreateProgram(GLuint& id, const std::array<GLuint, size> shaders);
 private:

@@ -63,13 +63,15 @@ void Renderer::InitScene()
 
 
 
-    // Generate 1 buffer object corresponding to the stored ID.
-    glGenBuffers(1, &m_triangleVbo);
-    // Vertex Buffer Objects use GL_ARRAY_BUFFER type, bind that to the created buffer object to make it a VBO.
-    // Also sets the current buffer ID.
-    glBindBuffer(GL_ARRAY_BUFFER, m_triangleVbo);
-    // send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(m_triangleVertices), m_triangleVertices, GL_STATIC_DRAW);
+    //// Generate 1 buffer object corresponding to the stored ID.
+    //glGenBuffers(1, &m_triangleVbo);
+    //// Vertex Buffer Objects use GL_ARRAY_BUFFER type, bind that to the created buffer object to make it a VBO.
+    //// Also sets the current buffer ID.
+    //glBindBuffer(GL_ARRAY_BUFFER, m_triangleVbo);
+    //// send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
+    //glBufferData(GL_ARRAY_BUFFER, sizeof(m_triangleVertices), m_triangleVertices, GL_STATIC_DRAW);
+
+    CreateVertexBuffer(m_triangleVbo, m_triangleVertices, sizeof(m_triangleVertices), GL_STATIC_DRAW);
 
     CompileShader(m_vertexShader, "VertexShader.glsl", GL_VERTEX_SHADER);
     CompileShader(m_fragmentShader, "FragmentShader.glsl", GL_FRAGMENT_SHADER);
@@ -181,14 +183,17 @@ bool Renderer::CompileShader(GLuint& id, const char* address, GLenum type)
     return true;
 }
 
+
+
 /// <summary>
 /// Load, bind and store data in an object
 /// </summary>
 /// <param name="id">ID of the buffer object</param>
 /// <param name="vertices">array of vertex data</param>
+/// <param name="size">sizeof(vertices)</param>
 /// <param name="usage">GL_STATIC_DRAW for static objects</param>
 /// <returns>if the buffer was created successfully</returns>
-bool Renderer::CreateVertexBuffer(GLuint& id, const GLfloat* vertices, const GLenum usage)
+bool Renderer::CreateVertexBuffer(GLuint& id, const GLfloat* vertices, const size_t size, const GLenum usage)
 {
     // Generate 1 buffer object corresponding to the stored ID.
     glGenBuffers(1, &id);
@@ -196,7 +201,7 @@ bool Renderer::CreateVertexBuffer(GLuint& id, const GLfloat* vertices, const GLe
     // Also sets the current buffer ID.
     glBindBuffer(GL_ARRAY_BUFFER, id);
     // send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, usage);
+    glBufferData(GL_ARRAY_BUFFER, size, vertices, usage);
 
     return true;
 }
