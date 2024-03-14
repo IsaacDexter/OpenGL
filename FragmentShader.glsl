@@ -1,7 +1,10 @@
 #version 330 core
-out vec3 FragColor;
+out vec4 FragColor;
+
+// A uniform is a global variable that can be set in the application.
+uniform vec4 myColor;
 
 void main()
 {
-    FragColor = vec3(1.0f, 0.0f, 0.0f);
+    FragColor = myColor;
 } 

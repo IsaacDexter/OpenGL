@@ -19,3 +19,10 @@ Can contain pos, normals, uvs etc.
 
 ## Program object
 Encapsulates or links processed shader pipeline stages into one 'object' (not really an object)
+
+# GLSL
+
+## Uniforms
+Pass data from CPU application to GPU shaders.
+Different compared to attributes - they're global.
+Kind of like a constant buffer I suppose?
