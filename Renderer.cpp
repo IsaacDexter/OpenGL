@@ -62,21 +62,10 @@ void Renderer::InitScene()
     glBindVertexArray(m_vao);
 
 
-
-    //// Generate 1 buffer object corresponding to the stored ID.
-    //glGenBuffers(1, &m_triangleVbo);
-    //// Vertex Buffer Objects use GL_ARRAY_BUFFER type, bind that to the created buffer object to make it a VBO.
-    //// Also sets the current buffer ID.
-    //glBindBuffer(GL_ARRAY_BUFFER, m_triangleVbo);
-    //// send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
-    //glBufferData(GL_ARRAY_BUFFER, sizeof(m_triangleVertices), m_triangleVertices, GL_STATIC_DRAW);
-
     CreateVertexBuffer(m_triangleVbo, m_triangleVertices, sizeof(m_triangleVertices), GL_STATIC_DRAW);
 
     CompileShader(m_vertexShader, "VertexShader.glsl", GL_VERTEX_SHADER);
     CompileShader(m_fragmentShader, "FragmentShader.glsl", GL_FRAGMENT_SHADER);
-
-
 
     // link the shaders in a shader program
     CreateProgram<2>(m_program, { m_vertexShader, m_fragmentShader });
@@ -105,11 +94,11 @@ void Renderer::RenderFunction(void)
     
     // Vertex attributes act as input to the vertex shader
     glVertexAttribPointer(
-        0,                  // attribute 0. No particular reason for 0, but must match the layout in the shader.
+        0,                  // Attribute 0, must match that in the vertex shader
         3,                  // size
         GL_FLOAT,           // type
         GL_FALSE,           // normalized?
-        0,                  // stride
+        0,                  // Stride, 0 indicates that vertex attributes are tightly packed in array
         (void*)0            // array buffer offset
     );
     // Enable the triangle vertex array. Set to 0 to match the first line of the vertex shader.
