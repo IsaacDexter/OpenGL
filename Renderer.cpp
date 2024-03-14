@@ -62,7 +62,8 @@ void Renderer::InitScene()
     glBindVertexArray(m_vao);
 
 
-    CreateVertexBuffer(m_triangleVbo, m_triangleVertices, sizeof(m_triangleVertices), GL_STATIC_DRAW);
+    CreateVertexBuffer(m_vbo, m_vertices, sizeof(m_vertices), GL_STATIC_DRAW);
+    CreateElementBuffer(m_ebo, m_indices, sizeof(m_indices), GL_STATIC_DRAW);
 
     CompileShader(m_vertexShader, "VertexShader.glsl", GL_VERTEX_SHADER);
     CompileShader(m_fragmentShader, "FragmentShader.glsl", GL_FRAGMENT_SHADER);
@@ -73,6 +74,15 @@ void Renderer::InitScene()
     // Delete the vertex and fragment shaders once they've been bound
     glDeleteShader(m_vertexShader);
     glDeleteShader(m_fragmentShader);
+
+
+    
+
+
+    // Set to wireframe mode
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    // Set to fill mode
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void Renderer::ResizeFunction(int width, int height)
@@ -90,12 +100,16 @@ void Renderer::RenderFunction(void)
     glUseProgram(m_program);
 
 
+    // Set the uniform that corresponds to triangle color.
+    GLuint uniform = glGetUniformLocation(m_program, "myColor");
+    glUniform4f(uniform, m_width/(float)m_height, 0.0f, 0.0f, 1.0f);
+
     // Draw the scene
     
     // Vertex attributes act as input to the vertex shader
     glVertexAttribPointer(
         0,                  // Attribute 0, must match that in the vertex shader
-        3,                  // size
+        3,                  // Size, 3 = RGB
         GL_FLOAT,           // type
         GL_FALSE,           // normalized?
         0,                  // Stride, 0 indicates that vertex attributes are tightly packed in array
@@ -104,12 +118,21 @@ void Renderer::RenderFunction(void)
     // Enable the triangle vertex array. Set to 0 to match the first line of the vertex shader.
     glEnableVertexAttribArray(0);
     glBindVertexArray(m_vao);
-    // Bind the triangle's vertex buffer object,
-    glBindBuffer(GL_ARRAY_BUFFER, m_triangleVbo);
+    // Bind the triangle's vertex buffer object (vertices),
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    // and the triangle's element buffer object (indices).
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 
     // Draw the currently bound triangle array
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(
+        GL_TRIANGLES,       // Drawing mode
+        6,                  // Number of elements to draw
+        GL_UNSIGNED_INT,    // Index type
+        0                   // Offset
+    );
 
+
+    // Unbind objects for next draw call.
     glBindVertexArray(0);
     glDisableVertexAttribArray(0);
     glUseProgram(0);
@@ -191,6 +214,19 @@ bool Renderer::CreateVertexBuffer(GLuint& id, const GLfloat* vertices, const siz
     glBindBuffer(GL_ARRAY_BUFFER, id);
     // send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
     glBufferData(GL_ARRAY_BUFFER, size, vertices, usage);
+
+    return true;
+}
+
+bool Renderer::CreateElementBuffer(GLuint& id, const GLuint* indices, const size_t size, const GLenum usage)
+{
+    // Generate 1 buffer object corresponding to the stored ID.
+    glGenBuffers(1, &id);
+    // Vertex Buffer Objects use GL_ARRAY_BUFFER type, bind that to the created buffer object to make it a VBO.
+    // Also sets the current buffer ID.
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, id);
+    // send the triangle vertices to the currently bound vertex buffer. GL_STATIC_DRAW signifies the data is set once and unchanged.
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size, indices, usage);
 
     return true;
 }
