@@ -4,9 +4,6 @@
 /// Creates a program (which encapsulates shaders) and links shaders to it, before detatching them.
 /// Deletes all of the shaders queued with Compile.
 /// </summary>
-/// <typeparam name="size">The number of shaders in the array</typeparam>
-/// <param name="id">The program ID</param>
-/// <param name="shaders">An array of shaders of size size</param>
 /// <returns>If the program linked successfullt</returns>
 bool Shader::Link()
 {
@@ -53,7 +50,6 @@ Shader::~Shader()
 /// Load and compile a shader of a given type and address.
 /// This queues it up for linking with Link()
 /// </summary>
-/// <param name="id">ID of the shader object</param>
 /// <param name="address">shader source file to load. must be text equivalent file</param>
 /// <param name="type">GL_*_SHADER</param>
 /// <returns>if the shader was loaded and compiled successfully</returns>
