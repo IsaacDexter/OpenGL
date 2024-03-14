@@ -18,6 +18,8 @@ public:
 	GLuint GetID() const;
 	int GetWidth() const;
 	int GetHeight() const;
+
+	void Bind() const { glBindTexture(GL_TEXTURE_2D, m_id); }
 };
 
 #endif // ! TEXTURE_H
