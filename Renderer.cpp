@@ -101,22 +101,29 @@ void Renderer::RenderFunction(void)
 
 
     // Set the uniform that corresponds to triangle color.
-    GLuint uniform = glGetUniformLocation(m_program, "myColor");
-    glUniform4f(uniform, m_width/(float)m_height, 0.0f, 0.0f, 1.0f);
+    //GLuint uniform = glGetUniformLocation(m_program, "uColor");
+    //glUniform4f(uniform, m_width/(float)m_height, 0.0f, 0.0f, 1.0f);
 
     // Draw the scene
     
+
     // Vertex attributes act as input to the vertex shader
+    // Position
     glVertexAttribPointer(
         0,                  // Attribute 0, must match that in the vertex shader
         3,                  // Size, 3 = RGB
         GL_FLOAT,           // type
         GL_FALSE,           // normalized?
-        0,                  // Stride, 0 indicates that vertex attributes are tightly packed in array
+        6 * sizeof(float),  // Stride, 0 indicates that vertex attributes are tightly packed in array
         (void*)0            // array buffer offset
     );
-    // Enable the triangle vertex array. Set to 0 to match the first line of the vertex shader.
+    // Enable the position vertex array. Set to 0 to match the first line of the vertex shader.
     glEnableVertexAttribArray(0);
+    // Color
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+
     glBindVertexArray(m_vao);
     // Bind the triangle's vertex buffer object (vertices),
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);

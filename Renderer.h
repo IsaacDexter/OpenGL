@@ -25,11 +25,12 @@ private:
 	const char* m_windowTitlePrefix = "OpenGL";
 
 	// Vertices of the triangle
-	const GLfloat m_vertices[12] = {
-		0.5f,	0.5f,	0.0f,  // top right
-		0.5f,	-0.5f,	0.0f,  // bottom right
-		-0.5f,	-0.5f,	0.0f,  // bottom left
-		-0.5f,	0.5f,	0.0f   // top left 
+	const GLfloat m_vertices[24] = {
+		// Position				// Color
+		0.5f,	0.5f,	0.0f,	1.0f,	0.0f,	0.0f,	// top right
+		0.5f,	-0.5f,	0.0f,	0.5f,	0.5f,	0.0f,	// bottom right
+		-0.5f,	-0.5f,	0.0f,	0.0f,	1.0f,	0.0f,	// bottom left
+		-0.5f,	0.5f,	0.0f,	0.0f,	0.0f,	1.0f,	// top left 
 	};
 
 	const GLuint m_indices[6] = {
