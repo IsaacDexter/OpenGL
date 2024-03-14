@@ -84,9 +84,31 @@ void Renderer::InitScene()
     m_battlefieldsForever = std::make_shared<Texture>();
     m_battlefieldsForever->LoadBMP("assets/textures/BattlefieldsForever.bmp");
 
-    // Bind the texture unity to the shader sampler
+    // Bind the texture unit to the shader sampler
     m_shader->Use();
     glUniform1i(glGetUniformLocation(m_shader->GetProgram(), "uTexture"), 0);
+
+
+
+    // Define vertex attributes
+    // Vertex attributes act as input to the vertex shader
+    // Position
+    glVertexAttribPointer(
+        0,                  // Attribute 0, must match that in the vertex shader
+        3,                  // Size, 3 = RGB
+        GL_FLOAT,           // type
+        GL_FALSE,           // normalized?
+        8 * sizeof(float),  // Stride, 0 indicates that vertex attributes are tightly packed in array
+        (void*)0            // array buffer offset
+    );
+    // Enable the position vertex array. Set to 0 to match the first line of the vertex shader.
+    glEnableVertexAttribArray(0);
+    // Color
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    // TexCoord
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 }
 
 void Renderer::ResizeFunction(int width, int height)
@@ -111,29 +133,10 @@ void Renderer::RenderFunction(void)
     // Draw the scene
     
 
-    // Vertex attributes act as input to the vertex shader
-    // Position
-    glVertexAttribPointer(
-        0,                  // Attribute 0, must match that in the vertex shader
-        3,                  // Size, 3 = RGB
-        GL_FLOAT,           // type
-        GL_FALSE,           // normalized?
-        8 * sizeof(float),  // Stride, 0 indicates that vertex attributes are tightly packed in array
-        (void*)0            // array buffer offset
-    );
-    // Enable the position vertex array. Set to 0 to match the first line of the vertex shader.
-    glEnableVertexAttribArray(0);
-    // Color
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-    // TexCoord
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
     // Bind vertex array object to govern state
     glBindVertexArray(m_vao);
 
-    // Actuvate thge texture unit
+    // Actvate the texture unit
     glActiveTexture(GL_TEXTURE0);
     // Bind the Texture
     m_battlefieldsForever->Bind();
@@ -143,7 +146,6 @@ void Renderer::RenderFunction(void)
 
     // Unbind objects for next draw call.
     glBindVertexArray(0);
-    glDisableVertexAttribArray(0);
     glUseProgram(0);
 
 
