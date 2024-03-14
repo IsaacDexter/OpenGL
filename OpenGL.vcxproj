@@ -157,6 +157,7 @@ xcopy /q /y "$(ProjectDir)glew\bin\$(Platform)\glew32.dll" "$(TargetDir)"
   <ItemGroup>
     <ClCompile Include="OpenGL.cpp" />
     <ClCompile Include="Renderer.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FragmentShader.glsl" />
@@ -165,6 +166,7 @@ xcopy /q /y "$(ProjectDir)glew\bin\$(Platform)\glew32.dll" "$(TargetDir)"
   <ItemGroup>
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
