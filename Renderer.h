@@ -2,7 +2,9 @@
 #define RENDERER_H
 
 #include "stdafx.h"
+#include "Texture.h"
 #include <array>
+
 
 class Renderer
 {
@@ -25,12 +27,12 @@ private:
 	const char* m_windowTitlePrefix = "OpenGL";
 
 	// Vertices of the triangle
-	const GLfloat m_vertices[24] = {
-		// Position				// Color
-		0.5f,	0.5f,	0.0f,	1.0f,	0.0f,	0.0f,	// top right
-		0.5f,	-0.5f,	0.0f,	0.5f,	0.5f,	0.0f,	// bottom right
-		-0.5f,	-0.5f,	0.0f,	0.0f,	1.0f,	0.0f,	// bottom left
-		-0.5f,	0.5f,	0.0f,	0.0f,	0.0f,	1.0f,	// top left 
+	const GLfloat m_vertices[32] = {
+		// Position				// Color				// TexCoord
+		0.5f,	0.5f,	0.0f,	1.0f,	0.0f,	0.0f,	1.0f,	1.0f,	// top right
+		0.5f,	-0.5f,	0.0f,	0.5f,	0.5f,	0.0f,	1.0f,	0.0f,	// bottom right
+		-0.5f,	-0.5f,	0.0f,	0.0f,	1.0f,	0.0f,	0.0f,	0.0f,	// bottom left
+		-0.5f,	0.5f,	0.0f,	0.0f,	0.0f,	1.0f,	0.0f,	1.0f,	// top left 
 	};
 
 	const GLuint m_indices[6] = {
@@ -57,6 +59,8 @@ private:
 
 	// ID to the Vertex Array Object, which stores vertex attributes that are currently enabled. This allows for switching of vertex states
 	GLuint m_vao;
+
+	std::shared_ptr<Texture> m_pavingStones138;
 };
 
 #endif // !RENDERER_H

@@ -75,14 +75,16 @@ void Renderer::InitScene()
     glDeleteShader(m_vertexShader);
     glDeleteShader(m_fragmentShader);
 
-
-    
-
-
     // Set to wireframe mode
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     // Set to fill mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+
+
+    // Load the textures
+    m_pavingStones138 = std::make_shared<Texture>();
+    m_pavingStones138->LoadBMP("assets/textures/BattlefieldsForever.bmp");
 }
 
 void Renderer::ResizeFunction(int width, int height)
@@ -114,21 +116,33 @@ void Renderer::RenderFunction(void)
         3,                  // Size, 3 = RGB
         GL_FLOAT,           // type
         GL_FALSE,           // normalized?
-        6 * sizeof(float),  // Stride, 0 indicates that vertex attributes are tightly packed in array
+        8 * sizeof(float),  // Stride, 0 indicates that vertex attributes are tightly packed in array
         (void*)0            // array buffer offset
     );
     // Enable the position vertex array. Set to 0 to match the first line of the vertex shader.
     glEnableVertexAttribArray(0);
     // Color
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    // TexCoord
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
 
+
+    // Bind vertex array object to govern state
     glBindVertexArray(m_vao);
     // Bind the triangle's vertex buffer object (vertices),
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
     // and the triangle's element buffer object (indices).
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+
+    // Actuvate thge texture unit
+    glActiveTexture(GL_TEXTURE0);
+    // Bind the Texture
+    glBindTexture(GL_TEXTURE_2D, m_pavingStones138->GetID());
+
+
 
     // Draw the currently bound triangle array
     glDrawElements(
