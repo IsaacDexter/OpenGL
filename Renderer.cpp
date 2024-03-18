@@ -1,6 +1,8 @@
 #include "Renderer.h"
 #include "Shader.h"
-
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 void Renderer::Initialize(int argc, char* argv[])
 {
