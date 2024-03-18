@@ -6,9 +6,8 @@
 #include "Shader.h"
 #include "Mesh.h"
 #include <array>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
+#include "Actor.h"
 
 class Renderer
 {
@@ -37,9 +36,9 @@ private:
 
 	std::shared_ptr<Mesh> m_rectangle;
 	std::shared_ptr<Texture> m_battlefieldsForever;
+	std::shared_ptr<Actor> m_cube;
 
 	// The model, view and projection matrices make up the single MVP matrix, which transforms objects into screenspace
-	glm::mat4 m_model;
 	glm::mat4 m_view;
 	glm::mat4 m_proj;
 };
