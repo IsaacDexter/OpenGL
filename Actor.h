@@ -4,14 +4,13 @@
 #include "stdafx.h"
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
-#include "Mesh.h"
-#include "Texture.h"
+#include "MeshRenderer.h";
 #include <string>
 
 class Actor
 {
 public:
-	Actor(std::string name, std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture, GLuint modelLocation);
+	Actor(std::string name, std::shared_ptr<MeshRenderer> meshRenderer, GLuint modelLocation);
 
 	virtual void Update(const float deltaTime) {}
 	virtual void Draw();
@@ -24,17 +23,11 @@ public:
 	
 	std::string GetName() const { return m_name; }
 
-	std::shared_ptr<Mesh> GetMesh() const { return m_mesh; }
-	std::shared_ptr<Texture> GetTexture() const { return m_texture; }
-
 	void SetPosition(const glm::vec3 position) { m_position = position; UpdateModel(); }
 	void SetRotation(const glm::vec3 rotation) { m_rotation = rotation; UpdateModel(); }
 	void SetScale(const glm::vec3 scale) { m_scale = scale; UpdateModel(); }
 
 	void SetName(const std::string name) { m_name = name; }
-
-	void SetMesh(const std::shared_ptr<Mesh> mesh) { m_mesh = mesh; }
-	void SetTexture(const std::shared_ptr<Texture> texture) { m_texture = texture; }
 protected:
 	void UpdateModel();
 
@@ -52,8 +45,7 @@ protected:
 	std::string m_name;
 
 	// Pointers to the actor's mesh and texture
-	std::shared_ptr<Mesh> m_mesh;
-	std::shared_ptr<Texture> m_texture;
+	std::shared_ptr<MeshRenderer> m_meshRenderer;
 };
 
 

@@ -9,10 +9,9 @@
 /// <param name="mesh">ptr to the mesh</param>
 /// <param name="texture">ptr to the texture</param>
 /// <param name="modelLocation">glGetUniformLocation(m_shader->GetProgram(), "uModel");</param>
-Actor::Actor(std::string name, std::shared_ptr<Mesh> mesh, std::shared_ptr<Texture> texture, GLuint modelLocation)
+Actor::Actor(std::string name, std::shared_ptr<MeshRenderer> meshRenderer, GLuint modelLocation)
 	: m_name(name)
-	, m_mesh(mesh)
-	, m_texture(texture)
+	, m_meshRenderer(meshRenderer)
 	, m_modelLocation(modelLocation)
 	, m_model(glm::mat4(1.0f))
 	, m_position(0.0f)
@@ -27,11 +26,7 @@ void Actor::Draw()
 	// Update the model matrix 
 	glUniformMatrix4fv(m_modelLocation, 1, GL_FALSE, glm::value_ptr(m_model));
 
-	if (m_texture)
-		m_texture->Bind();
-
-	if (m_mesh)
-		m_mesh->Draw();
+	m_meshRenderer->OnRender();
 }
 
 /// <summary>

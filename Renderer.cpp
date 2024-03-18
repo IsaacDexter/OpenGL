@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "MeshRenderer.h"
 
 void Renderer::Initialize(int argc, char* argv[])
 {
@@ -116,7 +117,8 @@ void Renderer::InitScene()
 
 
     GLuint uModel = glGetUniformLocation(m_shader->GetProgram(), "uModel");
-    m_cube = std::make_shared<Actor>("Cube", m_rectangle, m_battlefieldsForever, uModel);
+    auto meshRenderer = std::make_shared<MeshRenderer>(m_rectangle, m_battlefieldsForever);
+    m_cube = std::make_shared<Actor>("Cube", meshRenderer, uModel);
 
 
     // Create the view matrix to represent camera position
@@ -171,10 +173,7 @@ void Renderer::RenderFunction(void)
 
     // Actvate the texture unit
     glActiveTexture(GL_TEXTURE0);
-    // Bind the Texture
-    m_battlefieldsForever->Bind();
 
-    m_rectangle->Draw();
 
 
     // Unbind objects for next draw call.
