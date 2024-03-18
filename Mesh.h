@@ -17,15 +17,15 @@ private:
 	// Vertices of the triangle
 	const GLfloat m_vertices[(3 + 2) * 8] = {
         // Position				//TexCoord
-		0.5f,	0.5f,	-0.5f,	1.0f,	0.0f,	// Front Top Right
-		0.5f,	-0.5f,	-0.5f,	1.0f,	1.0f,	// Front Bottom Right
-		-0.5f,	-0.5f,	-0.5f,	0.0f,	1.0f,	// Front Bottom Left
-		-0.5f,	0.5f,	-0.5f,	0.0f,	0.0f,	// Front Top Left
+		0.5f,	0.5f,	-0.5f,	0.0f,	1.0f,	// Front Top Right
+		0.5f,	-0.5f,	-0.5f,	0.0f,	0.0f,	// Front Bottom Right
+		-0.5f,	-0.5f,	-0.5f,	1.0f,	0.0f,	// Front Bottom Left
+		-0.5f,	0.5f,	-0.5f,	1.0f,	1.0f,	// Front Top Left
 		
-		0.5f,	0.5f,	0.5f,	1.0f,	0.0f,	// Back Top Right
-		0.5f,	-0.5f,	0.5f,	1.0f,	1.0f,	// Back Bottom Right
-		-0.5f,	-0.5f,	0.5f,	0.0f,	1.0f,	// Back Bottom Left
-		-0.5f,	0.5f,	0.5f,	0.0f,	0.0f,	// Back Top Left
+		0.5f,	0.5f,	0.5f,	1.0f,	1.0f,	// Back Top Right
+		0.5f,	-0.5f,	0.5f,	1.0f,	0.0f,	// Back Bottom Right
+		-0.5f,	-0.5f,	0.5f,	0.0f,	0.0f,	// Back Bottom Left
+		-0.5f,	0.5f,	0.5f,	0.0f,	1.0f,	// Back Top Left
     };
 
 	const GLuint m_indices[6 * 6] = {

@@ -63,6 +63,9 @@ void Renderer::InitScene()
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
 
+    // Enable back face culling
+    glEnable(GL_DEPTH_TEST);
+
     m_rectangle = std::make_shared<Mesh>();
     m_rectangle->CreateVertexBuffer(GL_STATIC_DRAW);
     m_rectangle->CreateElementBuffer(GL_STATIC_DRAW);
@@ -161,8 +164,8 @@ void Renderer::RenderFunction(void)
 
 
     m_model = glm::mat4(1.0f);
-    m_model = glm::rotate(m_model, glm::radians(degrees), glm::vec3(1.0f, 0.0f, 0.0f));
-    degrees += 0.001f;
+    m_model = glm::rotate(m_model, glm::radians(degrees), glm::vec3(1.0f, 1.0f, 0.0f));
+    degrees += 0.01f;
 
     // Bind vertex array object to govern state
     glBindVertexArray(m_vao);
