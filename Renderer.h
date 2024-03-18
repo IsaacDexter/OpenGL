@@ -8,6 +8,7 @@
 #include <array>
 
 
+
 class Renderer
 {
 public:
@@ -15,9 +16,9 @@ public:
 
 	void ResizeFunction(int width, int height);
 	void RenderFunction();
-
-private:
 	void InitWindow(int argc, char* argv[]);
+private:
+	
 	void InitScene();
 private:
 	const char* m_windowTitlePrefix = "OpenGL";

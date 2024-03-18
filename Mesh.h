@@ -2,6 +2,8 @@
 #define MESH_H
 
 #include "stdafx.h"
+#include "Structs.h"
+
 
 class Mesh
 {

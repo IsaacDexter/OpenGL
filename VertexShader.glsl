@@ -9,9 +9,14 @@ layout (location = 2) in vec2 inTexCoord;
 out vec3 vColor;
 out vec2 vTexCoord;
 
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
 void main()
 {
     gl_Position = vec4(inPos.x, inPos.y, inPos.z, 1.0);
+    //gl_Position = projection * view * model * vec4(position, 1.0f);
     vColor = inColor;
     vTexCoord = inTexCoord;
 }

@@ -1,7 +1,9 @@
 #include "Mesh.h"
+#include "OBJ_Loader.h"
 
 Mesh::Mesh()
 {
+    
 }
 
 Mesh::~Mesh()
@@ -52,8 +54,24 @@ void Mesh::Bind() const
 void Mesh::Draw() const
 {
     Bind();
+    // Initialize Loader
+    objl::Loader Loader;
+  
+    //cout << Loader.LoadedMeshes[0].MeshName << endl;;
+    
+    Loader.LoadFile("OBJLoader/freddy.obj");
+
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_CCW);
+    glFrontFace(GL_CCW);
+    
     // Draw the currently bound triangle array
     glDrawElements(
+        // Load .obj File
+
+
         GL_TRIANGLES,       // Drawing mode
         sizeof(m_indices) / sizeof(m_indices[0]),                  // Number of elements to draw
         GL_UNSIGNED_INT,    // Index type

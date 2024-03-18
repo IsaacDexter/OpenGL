@@ -5,11 +5,13 @@ void Renderer::Initialize(int argc, char* argv[])
 {
     InitWindow(argc, argv);
 
+
     fprintf(
         stdout,
         "INFO: OpenGL Version: %s\n",
         glGetString(GL_VERSION)
     );
+    
 
     glClearColor(0.0f, 0.0f, 0.5f, 0.0f);
 
@@ -58,6 +60,7 @@ void Renderer::InitWindow(int argc, char* argv[])
 
 void Renderer::InitScene()
 {
+
     // Generate and bind a Vertex Array Object (VAO)
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
@@ -65,6 +68,7 @@ void Renderer::InitScene()
     m_rectangle = std::make_shared<Mesh>();
     m_rectangle->CreateVertexBuffer(GL_STATIC_DRAW);
     m_rectangle->CreateElementBuffer(GL_STATIC_DRAW);
+
 
 
     m_shader = std::make_unique<Shader>();
