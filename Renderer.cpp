@@ -1,6 +1,7 @@
 #include "Renderer.h"
 #include "Shader.h"
 
+
 void Renderer::Initialize(int argc, char* argv[])
 {
     InitWindow(argc, argv);
@@ -98,17 +99,29 @@ void Renderer::InitScene()
         3,                  // Size, 3 = RGB
         GL_FLOAT,           // type
         GL_FALSE,           // normalized?
-        8 * sizeof(float),  // Stride, 0 indicates that vertex attributes are tightly packed in array
+        5 * sizeof(float),  // Stride, 0 indicates that vertex attributes are tightly packed in array
         (void*)0            // array buffer offset
     );
     // Enable the position vertex array. Set to 0 to match the first line of the vertex shader.
     glEnableVertexAttribArray(0);
     // Color
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
     // TexCoord
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+
+
+    // Create a transformation matrix to rotate by 90 in the z axis and scale by half
+    m_model = glm::mat4(1.0f);
+    m_model = glm::rotate(m_model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+    // Create the view matrix to represent camera position
+    m_view = glm::mat4(1.0f);
+    m_view = glm::translate(m_view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+    // Create the projection matrix, which is aspect ratio dependent.
+    m_proj = glm::mat4(1.0f);
+    m_proj = glm::perspective(glm::radians(45.0f), m_width / (float)m_height, 0.1f, 100.0f);
 }
 
 void Renderer::ResizeFunction(int width, int height)
@@ -116,10 +129,15 @@ void Renderer::ResizeFunction(int width, int height)
     m_width = width;
     m_height = height;
     glViewport(0, 0, m_width, m_height);
+
+    // Recreate the projection matrix, which is aspect ratio dependent.
+    m_proj = glm::mat4(1.0f);
+    m_proj = glm::perspective(glm::radians(45.0f), m_width / (float)m_height, 0.1f, 100.0f);
 }
 
 void Renderer::RenderFunction(void)
 {
+    static float degrees = 0.0f;
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Enable the program, which contains the vertex and fragment shaders
@@ -132,6 +150,19 @@ void Renderer::RenderFunction(void)
 
     // Draw the scene
     
+    // Update MVP
+    // Get the uniform MVP matrices in the shader and write the value of the transformation matrix to it.
+    GLuint uModel = glGetUniformLocation(m_shader->GetProgram(), "uModel");
+    glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(m_model));
+    GLuint uView = glGetUniformLocation(m_shader->GetProgram(), "uView");
+    glUniformMatrix4fv(uView, 1, GL_FALSE, glm::value_ptr(m_view));
+    GLuint uProj = glGetUniformLocation(m_shader->GetProgram(), "uProj");
+    glUniformMatrix4fv(uProj, 1, GL_FALSE, glm::value_ptr(m_proj));
+
+
+    m_model = glm::mat4(1.0f);
+    m_model = glm::rotate(m_model, glm::radians(degrees), glm::vec3(1.0f, 0.0f, 0.0f));
+    degrees += 0.001f;
 
     // Bind vertex array object to govern state
     glBindVertexArray(m_vao);

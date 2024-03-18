@@ -118,7 +118,7 @@ xcopy /q /y "$(ProjectDir)glew\bin\$(Platform)\glew32.dll" "$(TargetDir)"
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)glew\include\GL;$(ProjectDir)freeglut\include\GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)glm;$(ProjectDir)glew\include\GL;$(ProjectDir)freeglut\include\GL;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
