@@ -115,10 +115,9 @@ void Renderer::InitScene()
     glEnableVertexAttribArray(1);
 
 
+    GLuint uModel = glGetUniformLocation(m_shader->GetProgram(), "uModel");
+    m_cube = std::make_shared<Actor>("Cube", m_rectangle, m_battlefieldsForever, uModel);
 
-    // Create a transformation matrix to rotate by 90 in the z axis and scale by half
-    m_model = glm::mat4(1.0f);
-    m_model = glm::rotate(m_model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
     // Create the view matrix to represent camera position
     m_view = glm::mat4(1.0f);
@@ -157,17 +156,15 @@ void Renderer::RenderFunction(void)
     
     // Update MVP
     // Get the uniform MVP matrices in the shader and write the value of the transformation matrix to it.
-    GLuint uModel = glGetUniformLocation(m_shader->GetProgram(), "uModel");
-    glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(m_model));
+    //GLuint uModel = glGetUniformLocation(m_shader->GetProgram(), "uModel");
     GLuint uView = glGetUniformLocation(m_shader->GetProgram(), "uView");
     glUniformMatrix4fv(uView, 1, GL_FALSE, glm::value_ptr(m_view));
     GLuint uProj = glGetUniformLocation(m_shader->GetProgram(), "uProj");
     glUniformMatrix4fv(uProj, 1, GL_FALSE, glm::value_ptr(m_proj));
 
-
-    m_model = glm::mat4(1.0f);
-    m_model = glm::rotate(m_model, glm::radians(degrees), glm::vec3(1.0f, 1.0f, 0.0f));
-    degrees += 0.01f;
+    m_cube->SetRotation(glm::vec3(degrees));
+    degrees+= 0.005f;
+    m_cube->Draw();
 
     // Bind vertex array object to govern state
     glBindVertexArray(m_vao);
