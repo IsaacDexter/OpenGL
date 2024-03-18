@@ -164,15 +164,15 @@ void Renderer::RenderFunction(void)
     GLuint uProj = glGetUniformLocation(m_shader->GetProgram(), "uProj");
     glUniformMatrix4fv(uProj, 1, GL_FALSE, glm::value_ptr(m_proj));
 
-    m_cube->SetRotation(glm::vec3(degrees));
-    degrees+= 0.005f;
-    m_cube->Draw();
-
     // Bind vertex array object to govern state
     glBindVertexArray(m_vao);
 
     // Actvate the texture unit
     glActiveTexture(GL_TEXTURE0);
+
+    m_cube->SetRotation(glm::vec3(degrees));
+    degrees+= 0.005f;
+    m_cube->Draw();
 
 
 
