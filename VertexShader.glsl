@@ -1,22 +1,19 @@
 #version 330 core
 // Bind the position to position 0 in the layout
 layout (location = 0) in vec3 inPos;
-layout (location = 1) in vec3 inColor;
-layout (location = 2) in vec2 inTexCoord;
+layout (location = 1) in vec2 inTexCoord;
 
 // gl_position is a rare, built in output
-// color is passed to the fragment shader. The name is a semantic and must match.
-out vec3 vColor;
 out vec2 vTexCoord;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+// Uniforms are sort of like constant buffers, they are global scope to the shader
+uniform mat4 uModel;
+uniform mat4 uView;
+uniform mat4 uProj;
 
 void main()
 {
-    gl_Position = vec4(inPos.x, inPos.y, inPos.z, 1.0);
-    //gl_Position = projection * view * model * vec4(position, 1.0f);
-    vColor = inColor;
+    // Multiply position by MVP (reverse order as matrix multiplication) to give screen space coords
+    gl_Position = uProj * uView * uModel * vec4(inPos, 1.0);
     vTexCoord = inTexCoord;
 }
