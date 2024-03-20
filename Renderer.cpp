@@ -71,7 +71,7 @@ void Renderer::InitScene()
 
     // Enable back face culling
     glEnable(GL_DEPTH_TEST);
-
+    glCullFace(GL_FRONT);
     m_rectangle = std::make_shared<Mesh>();
     m_rectangle->CreateVertexBuffer(GL_STATIC_DRAW);
     m_rectangle->CreateElementBuffer(GL_STATIC_DRAW);
@@ -88,6 +88,8 @@ void Renderer::InitScene()
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     // Set to fill mode
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glEnable(GL_CULL_FACE);
+    
 
 
 

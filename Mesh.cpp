@@ -1,5 +1,5 @@
 #include "Mesh.h"
-#include "OBJ_Loader.h"
+//#include "OBJ_Loader.h"
 
 Mesh::Mesh()
 {
@@ -55,11 +55,11 @@ void Mesh::Draw() const
 {
     Bind();
     // Initialize Loader
-    objl::Loader Loader;
+    //objl::Loader Loader;
   
     //cout << Loader.LoadedMeshes[0].MeshName << endl;;
     
-    Loader.LoadFile("OBJLoader/freddy.obj");
+    //Loader.LoadFile("OBJLoader/freddy.obj");
 
     glEnable(GL_NORMALIZE);
     glEnable(GL_DEPTH_TEST);
